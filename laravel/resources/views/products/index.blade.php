@@ -6,7 +6,7 @@
 
     <a href="{{ route('products.create') }}" class="bg-gray-100 text-black px-4 py-2 rounded border border-gray-300">Add Product</a>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         @foreach ($products as $product)
             <div class="bg-white p-4 rounded shadow">
                 @if($product->image)
@@ -24,6 +24,14 @@
                         <button type="submit" class="text-red-500 hover:underline">Delete</button>
                     </form>
                 </div>
+
+                <!-- Add to Cart button -->
+                <form method="POST" action="{{ route('cart.add', $product) }}" class="mt-2">
+                    @csrf
+                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-black py-2 px-4 rounded">
+                        Add to Cart
+                    </button>
+                </form>
             </div>
         @endforeach
     </div>
