@@ -9,3 +9,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth','can:isAdmin'])->group(function(){
+  // // you’ll add admin product & order routes here later
+});
+
