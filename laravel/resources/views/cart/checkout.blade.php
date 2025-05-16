@@ -1,42 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-4 bg-white rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Checkout</h1>
-
-    @if (count($cart) > 0)
-        <ul class="divide-y">
-            @foreach ($cart as $item)
-                <li class="py-2 flex justify-between">
-                    <span>{{ $item['name'] }} x{{ $item['quantity'] }}</span>
-                    <span>${{ number_format($item['price'] * $item['quantity'], 2) }}</span>
-                </li>
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h2 class="text-2xl font-bold mb-4">Checkout</h2>
+    <form method="POST" action="{{ route('checkout.place') }}">
+        @csrf
+        <div class="mb-4">
+            <label>Name</label>
+            <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label>Address</label>
+            <input type="text" name="address" value="{{ old('address') }}" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label>Payment Type</label>
+            <select name="payment_type" class="w-full border rounded p-2" required>
+                <option value="cod">Cash on Delivery</option>
+                <option value="card">Credit Card</option>
+            </select>
+        </div>
+        <h3 class="font-bold mb-2">Order Summary</h3>
+        <ul class="mb-4">
+            @foreach($cart as $item)
+                <li>{{ $item['name'] }} x {{ $item['quantity'] }} - ${{ $item['price'] * $item['quantity'] }}</li>
             @endforeach
         </ul>
-
-        <div class="mt-4 text-right font-bold text-lg">
-            Total: ${{ number_format($total, 2) }}
-        </div>
-
-        <form action="{{ route('checkout.form') }}" method="POST" class="mt-6 space-y-4">
-            @csrf
-
-            <input type="text" name="name" placeholder="Full Name" required class="w-full p-2 border rounded">
-            <input type="email" name="email" placeholder="Email Address" required class="w-full p-2 border rounded">
-            <input type="text" name="address" placeholder="Shipping Address" required class="w-full p-2 border rounded">
-
-            <select name="payment_type" required class="w-full p-2 border rounded">
-                <option value="">Select Payment Type</option>
-                <option value="Cash">Cash</option>
-                <option value="Card">Card</option>
-            </select>
-
-            <button type="submit" class="w-full bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-600">
-                Place Order
-            </button>
-        </form>
-    @else
-        <p>Your cart is empty.</p>
-    @endif
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Place Order</button>
+    </form>
 </div>
 @endsection
