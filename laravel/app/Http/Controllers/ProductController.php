@@ -22,9 +22,9 @@ class ProductController extends Controller
             'name' => 'required',
             'category' => 'required',
             'description' => 'required',
-            'price' => 'required|numeric',
-            'stock_quantity' => 'required|integer',
-            'image' => 'image|nullable',
+            'price' => 'required|numeric|min:0',
+            'stock_quantity' => 'required|integer|min:0',
+            'image' => 'image|nullable|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -32,7 +32,7 @@ class ProductController extends Controller
         }
 
         Product::create($data);
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     public function show(Product $product) {
@@ -48,21 +48,30 @@ class ProductController extends Controller
             'name' => 'required',
             'category' => 'required',
             'description' => 'required',
-            'price' => 'required|numeric',
-            'stock_quantity' => 'required|integer',
-            'image' => 'image|nullable',
+            'price' => 'required|numeric|min:0',
+            'stock_quantity' => 'required|integer|min:0',
+            'image' => 'image|nullable|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($data);
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Product $product) {
+        // Delete image from storage
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }

@@ -30,7 +30,7 @@
                 <li>{{ $item['name'] }} x {{ $item['quantity'] }} - ${{ $item['price'] * $item['quantity'] }}</li>
             @endforeach
         </ul>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Place Order</button>
+        <button type="submit" class="bg-blue-500 text-black px-4 py-2 rounded">Place Order</button>
     </form>
 </div>
 @endsection
